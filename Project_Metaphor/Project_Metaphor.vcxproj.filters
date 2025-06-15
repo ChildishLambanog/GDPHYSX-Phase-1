@@ -75,6 +75,15 @@
     <ClCompile Include="P6\RSpeedGenerator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="P6\ParticleSystem.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="FountainDemo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="P6\RandomSprayForceGenerator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="tiny_obj_loader.h">
@@ -135,6 +144,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="P6\RSpeedGenerator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="P6\ParticleSystem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="FountainDemo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="P6\RandomSprayForceGenerator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

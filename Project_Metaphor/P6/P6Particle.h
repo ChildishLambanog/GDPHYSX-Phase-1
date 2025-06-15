@@ -26,5 +26,12 @@ namespace P6 {
 			void Update(float time);
 			void Destroy();
 			bool IsDestroyed() { return isDestroyed; }
+
+			//For Phase 1:
+		protected:
+			float lifespan = 5.0f; // default lifespan in seconds
+		public:
+			void SetLifespan(float time) { lifespan = time; }
+			float GetLifespan() const { return lifespan; }
 	};
 }

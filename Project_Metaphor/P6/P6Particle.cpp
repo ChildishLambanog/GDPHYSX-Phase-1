@@ -11,6 +11,12 @@ void P6::P6Particle::Update(float time)
 	this->UpdatePosition(time);
 	this->UpdateVelocity(time);
 
+	// Lifespan logic
+	lifespan -= time;
+	if (lifespan <= 0.0f) {
+		Destroy();
+	}
+
 	this->ResetForce();
 }
 

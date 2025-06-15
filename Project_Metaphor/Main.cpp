@@ -25,9 +25,13 @@
 
 #include "P6/RSpeedGenerator.h"
 
+
+
 // testing renderparticle
 
 #include "RenderParticle.h"
+
+#include"FountainDemo.h"
 
 #include <iostream>
 #include <string>
@@ -43,7 +47,7 @@ constexpr std::chrono::nanoseconds timestep(16ms);
 
 
 
-float scale = 50;
+float scale = 3;
 float StartPos = -800; // start of particles
 /*
 Timerstuff
@@ -73,8 +77,8 @@ float yaw = -90.0f;
 //for initial mouse movement
 float lastX = 400, lastY = 400;
 
-float height = 500;
-float width = 1000;
+float height = 800;
+float width = 800;
 
 //Initializing the object classes to be rendered
 Model3D main_object({ 0, 0, 0 });
@@ -82,7 +86,7 @@ Model3D main_object2({ 0, 0, 0 });
 Model3D main_object3({ 0, 0, 0 });
 Model3D main_object4({ 0, 0, 0 });
 //initial color
-
+P6::PhysicsWorld pWorld = P6::PhysicsWorld();
 
 //initialize particle points
 P6::P6Particle particle = P6::P6Particle(StartPos, 250, 0); //Position of Partile 1
@@ -92,6 +96,10 @@ P6::P6Particle Pp = P6::P6Particle(StartPos, -450, 0); //Position of Partile pla
 
 OrthoCamera orca({ 0,2,0 });
 PerspectiveCamera perca({ 0,0,0 }, height, width);
+
+//Fountain Variables
+FountainDemo* fountain = nullptr;
+
 
 
 //Point light variables
@@ -407,7 +415,7 @@ int main(void)
     std::chrono::nanoseconds curr_ns(0); 
 
 
-	P6::PhysicsWorld pWorld = P6::PhysicsWorld();
+
 
 	particle.Acceleration = P6::MyVector(0.f, -900.81f, 0.f); //gravity
     //phys world for updating particles location
@@ -419,6 +427,9 @@ int main(void)
     // adding renderparticles
     RenderParticle rpTest(&particle, &main_object, P6::MyVector(1.f, 1.f, 1.f));
 	renderParticles.push_back(&rpTest);
+
+    //Fountain
+    fountain = new FountainDemo(&pWorld, &main_object, 1000);
 
    /* P6::DragForceGenerator drag = P6::DragForceGenerator(0.14f, 0.1f);
 	pWorld.forceRegistry.Add(&particle, &drag);*/
@@ -454,7 +465,7 @@ int main(void)
             curr_ns -= timestep;
         
 			pWorld.Update((float)ms.count() / 10000);
-			
+            fountain->Update((float)ms.count() / 1000); // deltaTime in seconds
  
         }
 
@@ -545,7 +556,7 @@ int main(void)
 		}
 		
 
-
+        fountain->Render(&mainObjShader, &VAO, &fullVertexData, &texture, "spark");
         
         /* Swap front and back buffers */
         glfwSwapBuffers(window);

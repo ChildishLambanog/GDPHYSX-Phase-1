@@ -143,6 +143,7 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="ColorLight.cpp" />
     <ClCompile Include="DirectionLight.cpp" />
+    <ClCompile Include="FountainDemo.cpp" />
     <ClCompile Include="P6\DragForceGenerator.cpp" />
     <ClCompile Include="P6\GravityForceGenerator.cpp" />
     <ClCompile Include="P6\ForceRegistry.cpp" />
@@ -154,9 +155,11 @@
     <ClCompile Include="OrthoCamera.cpp" />
     <ClCompile Include="P6\P6Particle.cpp" />
     <ClCompile Include="P6\MyVector.cpp" />
+    <ClCompile Include="P6\ParticleSystem.cpp" />
     <ClCompile Include="PerspectiveCamera.cpp" />
     <ClCompile Include="P6\PhysicsWorld.cpp" />
     <ClCompile Include="PointLight.cpp" />
+    <ClCompile Include="P6\RandomSprayForceGenerator.cpp" />
     <ClCompile Include="RenderParticle.cpp" />
     <ClCompile Include="P6\RSpeedGenerator.cpp" />
     <ClCompile Include="Shader.cpp" />
@@ -165,6 +168,7 @@
     <ClInclude Include="Camera.h" />
     <ClInclude Include="ColorLight.h" />
     <ClInclude Include="DirectionLight.h" />
+    <ClInclude Include="FountainDemo.h" />
     <ClInclude Include="P6\DragForceGenerator.h" />
     <ClInclude Include="P6\GravityForceGenerator.h" />
     <ClInclude Include="P6\ForceRegistry.h" />
@@ -174,9 +178,11 @@
     <ClInclude Include="OrthoCamera.h" />
     <ClInclude Include="P6\P6Particle.h" />
     <ClInclude Include="P6\MyVector.h" />
+    <ClInclude Include="P6\ParticleSystem.h" />
     <ClInclude Include="PerspectiveCamera.h" />
     <ClInclude Include="P6\PhysicsWorld.h" />
     <ClInclude Include="PointLight.h" />
+    <ClInclude Include="P6\RandomSprayForceGenerator.h" />
     <ClInclude Include="RenderParticle.h" />
     <ClInclude Include="P6\RSpeedGenerator.h" />
     <ClInclude Include="Shader.h" />
