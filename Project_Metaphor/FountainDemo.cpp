@@ -72,7 +72,7 @@ void FountainDemo::Update(float deltaTime) {
 
         //setSizeArea
         sparkModel->setScale(glm::vec3(radius, radius, radius));
-
+        //test
 
 
         // Mass and damping
