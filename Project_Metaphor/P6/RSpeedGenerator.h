@@ -21,12 +21,7 @@ namespace P6 {
 			int multiplier = 100;
 		public:
 			RSpeedGenerator(int AccelPoint) 
-			{
-				//srand(time(0)); // seed the random number generator
-				// used for speed scale
-				
-
-				
+			{	
 				this->randAccel = AccelPoint;
 				this->randAccel *= multiplier; // scale the random acceleration
 			}

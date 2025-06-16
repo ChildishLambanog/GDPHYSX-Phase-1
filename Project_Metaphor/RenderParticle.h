@@ -11,18 +11,6 @@ public:
 
 	float size;
 
-	/*
-	to test 
-
-	std::vector<GLfloat> fullVertexData;
-	GLuint* VAO;
-	Shader* shaderProgs;
-	
-	*/
-
-	
-	// GLuint* texture;
-
 	RenderParticle(P6Particle* particle, Model3D* model) : particle(particle), model(model)
 	{
 		color = P6::MyVector(1.0f, 1.0f, 1.0f); // Default color white
@@ -37,6 +25,4 @@ public:
 	void Draw();
 
 	void Draw(Shader* shaderProg, GLuint* VAO, std::vector<GLfloat>* fullVertexData,GLuint* tex, std::string name);
-
-//	void setTexInt(GLuint* texture) { this->texture = texture; }
 };

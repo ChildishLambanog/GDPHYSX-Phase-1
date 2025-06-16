@@ -1,3 +1,6 @@
+//Phase 1 By: Amar, Dacanay, Villanueva
+//GDPHYSX XX22
+
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
@@ -25,7 +28,7 @@
 
 #include "P6/RSpeedGenerator.h"
 
-// testing renderparticle
+//Testing Render Particle
 
 #include "RenderParticle.h"
 
@@ -44,36 +47,20 @@ using namespace std::chrono_literals;
 constexpr std::chrono::nanoseconds timestep(16ms);
 
 float scale = 3;
-float StartPos = -800; // start of particles
-
-/*
-Timerstuff
-
-float timerecord[4] = {}; /// all times from the balls
-bool isRecords[4] = { false, false, false, false }; // if the record is set or not
-std::vector<float> order;
-std::vector<std::string> nOrder; // name order
-//false = main, true = sphere
-*/
+float StartPos = -800; //Start of particles
 
 bool stateControl = false;
-bool stateCam = true;
-
-int Presseds = 0; //amount of spaces pressed or hold
+bool stateCam = true;       //True = OrthoCamera, False = PerspectiveCamera
+bool fountainPaused = false; //False = Fountain is running, True = Fountain is paused
 
 //initialize camera vars
 glm::vec3 cameraPos = glm::vec3(0, 0, 2.f);
 glm::vec3 WorldUp = glm::vec3(0, 1.0f, 0);
 glm::vec3 Front = glm::vec3(0, 0.0f, -1);
-const float cameraRotateSpeed = 1.5f; // degrees per key press/frame
+const float cameraRotateSpeed = 1.5f;       //degrees per key press/frame
 
-//initialize for mouse movement
-bool firstMouse = true;
 float pitch = 0.0f;
 float yaw = -90.0f;
-
-//for initial mouse movement
-float lastX = 400, lastY = 400;
 
 float height = 800;
 float width = 800;
@@ -86,14 +73,14 @@ Model3D main_object4({ 0, 0, 0 });
 OrthoCamera orca({ 0,2,0 });
 PerspectiveCamera perca({ 0,0,0 }, height, width);
  
-//initial color
+//Initial color
 P6::PhysicsWorld pWorld = P6::PhysicsWorld();
 
 //initialize particle points
-P6::P6Particle particle = P6::P6Particle(StartPos, 250, 0); //Position of Particle 1
-P6::P6Particle particle2 = P6::P6Particle(StartPos, 0, 0); //Position of Particle 2
-P6::P6Particle particle3 = P6::P6Particle(StartPos, -250, 0); //Position of Particle 3
-P6::P6Particle Pp = P6::P6Particle(StartPos, -450, 0); //Position of Particle player
+P6::P6Particle particle = P6::P6Particle(StartPos, 250, 0);     //Position of Particle 1
+P6::P6Particle particle2 = P6::P6Particle(StartPos, 0, 0);      //Position of Particle 2
+P6::P6Particle particle3 = P6::P6Particle(StartPos, -250, 0);   //Position of Particle 3
+P6::P6Particle Pp = P6::P6Particle(StartPos, -450, 0);          //Position of Particle player
 
 //Fountain Variables
 FountainDemo* fountain = nullptr;
@@ -112,51 +99,47 @@ void Destroy(Model3D& obj) //hide object
 void Key_Callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
 
-    //if (key == GLFW_KEY_SPACE)
-    //{
-    //	Pp.AddForce(P6::MyVector(1000,0, 0)); PLEASE REMOVE BEFORE SUBMISSION
-    //}
-
-    if (glfwGetKey(window, GLFW_KEY_1))
+    if (glfwGetKey(window, GLFW_KEY_1)) //Change the camera into Orthographic Mode
     {
-        stateCam = true; //changes the camera into ortho mode
+        stateCam = true; 
         std::cout << "Camera changed to Ortographic" << std::endl;
     }
 
-    if (glfwGetKey(window, GLFW_KEY_2))
+    if (glfwGetKey(window, GLFW_KEY_2)) //Change the camera into Perspective Mode
     {
-        stateCam = false; //changes the camera into perspective mode
+        stateCam = false; 
         std::cout << "Camera changed to Perspective" << std::endl;
     }
 
-    // Only rotate camera in perspective mode
-    if (!stateCam)
+    if (key == GLFW_KEY_SPACE && action == GLFW_PRESS)
+    {
+        fountainPaused = !fountainPaused;
+        std::cout << (fountainPaused ? "Fountain paused" : "Fountain resumed") << std::endl;
+    }
+
+    if (!stateCam)   //Only rotate camera in perspective mode
     {
         bool updated = false;
 
-        // Rotate right (D)
-        if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+        if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) //Rotate Right
         {
             yaw -= cameraRotateSpeed;
             updated = true;
         }
 
-        // Rotate left (A)
-        if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+        if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS) //Rotate Left
         {
             yaw += cameraRotateSpeed;
             updated = true;
         }
 
-        // Rotate up (W)
-        if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+        if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS) //Rotate Up
         {
             pitch += cameraRotateSpeed;
             updated = true;
         }
 
-        // Rotate down (S)
-        if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+        if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS) //Rotate Down
         {
             pitch -= cameraRotateSpeed;
             updated = true;
@@ -173,14 +156,13 @@ void Key_Callback(GLFWwindow* window, int key, int scancode, int action, int mod
             pitch = -89.0f;
         }
 
-        //If any key was pressed, update camera position and front //new addition 
-
-        if (updated)
+        
+        if (updated) //If any key was pressed update the camera position and front
         {
-            glm::vec3 fountainCenter = main_object.getPosition(); // Or use your fountain's actual center
+            glm::vec3 fountainCenter = main_object.getPosition(); 
 
-            float radius = 500.0f; //Camera distance from the fountain, adjust as needed 12.0f/120/240
-            float heightOffset = 250.0f; //Height above the fountain center, adjust as needed 80.0f/200/
+            float radius = 800.0f;       //Camera distance from the fountain
+            float heightOffset = 300.0f; //Height above the fountain center
 
             glm::vec3 offset;
             offset.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch)) * radius;
@@ -190,8 +172,9 @@ void Key_Callback(GLFWwindow* window, int key, int scancode, int action, int mod
             glm::vec3 camPos = fountainCenter + offset;
             perca.setCameraPos(camPos);
 
-            //Look at the fountain center
-            perca.setFront(glm::normalize(fountainCenter - camPos));
+            //The look is slightly above the fountain's center to push it toward the bottom of the window
+            glm::vec3 lookAtTarget = fountainCenter + glm::vec3(0, 375.0f, 0);
+            perca.setFront(glm::normalize(lookAtTarget - camPos));
         }
     }
 }
@@ -205,7 +188,7 @@ int main(void)
         return -1;
 
     /* Create a windowed mode window and its OpenGL context */
-    window = glfwCreateWindow(width, height, "Amar, Dacanay, Villanueva Phase 1", NULL, NULL);
+    window = glfwCreateWindow(width, height, "GQuuuuuuX Engine", NULL, NULL);
     if (!window)
     {
         glfwTerminate();
@@ -259,7 +242,7 @@ int main(void)
     //Shaders
     Shader mainObjShader("Shaders/mainObj.vert", "Shaders/mainObj.frag");
 
-    //compile shader vertex
+    //Shader Vertex
     std::fstream vertSrc("Shaders/directionLight.vert");
     std::stringstream vertBuff;
 
@@ -268,7 +251,7 @@ int main(void)
     std::string vertS = vertBuff.str();
     const char* v = vertS.c_str();
 
-    //compile shader fragment
+    //Shader Fragment
     std::fstream fragSrc("Shaders/directionLight.frag");
     std::stringstream fragBuff;
 
@@ -277,27 +260,24 @@ int main(void)
     std::string fragS = fragBuff.str();
     const char* f = fragS.c_str();
 
-    //MAIN OBJECT
-    //create vertex shader(used for movements)
+    //Main Object
     GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
 
     glShaderSource(vertexShader, 1, &v, NULL);
 
     glCompileShader(vertexShader);
 
-    //create frag shader (our objects are turned into pixels/fragments which we will use to color in an object)
     GLuint fragShader = glCreateShader(GL_FRAGMENT_SHADER);
 
     glShaderSource(fragShader, 1, &f, NULL);
 
     glCompileShader(fragShader);
 
-    //create shader program that'll just run both frag and vert together as one.
     GLuint shaderProg = glCreateProgram();
     glAttachShader(shaderProg, vertexShader);
     glAttachShader(shaderProg, fragShader);
 
-    glLinkProgram(shaderProg);//compile to make sure computer remembers
+    glLinkProgram(shaderProg);
 
     std::string path = "3D/sphere.obj"; //provided from class
     std::vector<tinyobj::shape_t> shapes;
@@ -326,12 +306,10 @@ int main(void)
         0.f, 0.f
     };
    
-    //array of Mesh for the main object
     std::vector<GLfloat> fullVertexData;
     for (int i = 0; i < shapes[0].mesh.indices.size(); i++) {
         tinyobj::index_t vData = shapes[0].mesh.indices[i];
 
-        //vertex
         fullVertexData.push_back(
             attributes.vertices[(vData.vertex_index * 3)]
         );
@@ -344,7 +322,6 @@ int main(void)
             attributes.vertices[(vData.vertex_index * 3) + 2]
         );
 
-        //normal
         fullVertexData.push_back(
             attributes.normals[(vData.normal_index * 3)]
         );
@@ -357,7 +334,6 @@ int main(void)
             attributes.normals[(vData.normal_index * 3) + 2]
         );
 
-        //texcoord
         fullVertexData.push_back(
             attributes.texcoords[(vData.texcoord_index * 2)]
         );
@@ -365,10 +341,9 @@ int main(void)
         fullVertexData.push_back(
             attributes.texcoords[(vData.texcoord_index * 2) + 1]
         );
-
     }
 
-    //main object
+    //Main object
     GLuint VAO, VBO;
 
     glGenVertexArrays(1, &VAO);
@@ -426,7 +401,6 @@ int main(void)
 
     glEnableVertexAttribArray(2);
 
-    //SET BINDINGS TO NULL
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
@@ -460,9 +434,7 @@ int main(void)
     DirectionLight directionLight(lightPos, lightColor, ambientStr, ambientColor, specStr, specPhong, lightDirection, dl_brightness);
 
     P6::MyVector sample(0.0f, 0.0f, 0.0f);
-    //sample.x = 0;
  
-
     //Scale Setting of objects
     main_object.setScale(glm::vec3(scale, scale, scale));
 	main_object2.setScale(glm::vec3(scale, scale, scale));
@@ -475,14 +447,13 @@ int main(void)
 	auto prev_time = curr_time;
     std::chrono::nanoseconds curr_ns(0); 
 
-	particle.Acceleration = P6::MyVector(0.f, -900.81f, 0.f); //gravity
-    //phys world for updating particles location
+	particle.Acceleration = P6::MyVector(0.f, -900.81f, 0.f); //Gravity
 	pWorld.AddParticle(&particle);
 	pWorld.AddParticle(&particle2);
 	pWorld.AddParticle(&particle3);
 	pWorld.AddParticle(&Pp);
 
-    // adding renderparticles
+    //Adding Render Particles
     RenderParticle rpTest(&particle, &main_object, P6::MyVector(1.f, 1.f, 1.f));
 	renderParticles.push_back(&rpTest);
 
@@ -502,61 +473,50 @@ int main(void)
         if (curr_ns >= timestep)
         {
 			auto ms = std::chrono::duration_cast<std::chrono::milliseconds>(curr_ns);
-           // std::cout << "MS: " << (float)ms.count() << "\n";
+            
+            //std::cout << "MS: " << (float)ms.count() << "\n";
 
             curr_ns -= timestep;
-        
-			pWorld.Update((float)ms.count() / 10000);
-            fountain->Update((float)ms.count() / 1000); // deltaTime in seconds
- 
+            
+            if (!fountainPaused) 
+            {
+                fountain->Update((float)ms.count() / 1000); // deltaTime in seconds
+                pWorld.Update((float)ms.count() / 10000);
+            }
         }
-
-       // std::cout << "Normal Update\n";
 
         /* Render here */
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glm::mat4 viewMatrix;
 
 
-        //setposition of particle to object
-
-      //  main_object.setPosition(glm::vec3(particle.Position.x, particle.Position.y, particle.Position.z));
+        //Set Position of Particle to Object
+        main_object.setPosition(glm::vec3(particle.Position.x, particle.Position.y, particle.Position.z));
 		main_object2.setPosition(glm::vec3(particle2.Position.x, particle2.Position.y, particle2.Position.z));
         main_object3.setPosition(glm::vec3(particle3.Position.x, particle3.Position.y, particle3.Position.z));
 
         main_object4.setPosition(glm::vec3(Pp.Position.x, Pp.Position.y, Pp.Position.z));
 
-        
-        //set camera to be MOVEABLE i.e. can be influenced
-        if (stateCam) 
+        if (stateCam)  //Set the camera to Orthographic mode
         {
-            //set the camera to ortho
             viewMatrix = glm::lookAt(orca.getCameraPos(), orca.getCameraPos() + orca.getFront(), orca.getWorldUp());
         }
 
-        else 
+        else  //Set the camera to Perspective Mode
         {
-            //set the camera to perspective
             viewMatrix = glm::lookAt(perca.getCameraPos(), perca.getCameraPos() + perca.getFront(), perca.getWorldUp());
         }
-
-        ////skybox
-        //glDepthMask(GL_FALSE);
-        //glDepthFunc(GL_LEQUAL);
-
-        //glDepthMask(GL_TRUE);
-        //glDepthFunc(GL_LESS);
 
         //Drawing Main Object
         directionLight.setBrightness(dl_brightness);
 
-        //attaches the same values for direction and point light
+        //attach same values for both direction and point light
         directionLight.attachFundamentals(&mainObjShader);
 
-        //attaches the specific values of each light
+        //attach specific values for each light
         directionLight.attachSpecifics(&mainObjShader);
 
-        if (stateCam) //set the camera to ortho
+        if (stateCam) //Set the camera to Orthographic mode
         {
             main_object.setCamera(orca.getProjection(), orca.getCameraPos(), orca.getFront(), orca.getViewMat());
             main_object2.setCamera(orca.getProjection(), orca.getCameraPos(), orca.getFront(), orca.getViewMat());
@@ -565,22 +525,20 @@ int main(void)
 
         }
 
-        else  //set the camera to perspective //MAYBE NEEDS TO CHANGE
+        else //Set the camera to Perspective Mode
         {        
             main_object.setCamera(perca.getProjection(), perca.getCameraPos(), perca.getFront(), perca.getViewMat());
         }
 
-        //MAIN OBJECT
-        //TEXTURE OF MAIN OBJECT
+        //Main Object Texture
         mainObjShader.use();
 
-		// testing render particles
+		//Testing render particles
 		for (std::list<RenderParticle*>::iterator it = renderParticles.begin(); it != renderParticles.end(); ++it)
 		{
 			(*it)->Draw(&mainObjShader, &VAO, &fullVertexData, &texture,"tex0");
 		}
 		
-
         fountain->Render(&mainObjShader, &VAO, &fullVertexData, &texture, "spark");
         
         /* Swap front and back buffers */
@@ -594,5 +552,4 @@ int main(void)
     glfwTerminate();
     return 0;
     std::cin.get();
-
 }
