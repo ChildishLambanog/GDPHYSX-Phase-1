@@ -21,8 +21,6 @@ public:
 	
 	// GLuint* texture;
 
-
-
 	RenderParticle(P6Particle* particle, Model3D* model) : particle(particle), model(model)
 	{
 		color = P6::MyVector(1.0f, 1.0f, 1.0f); // Default color white

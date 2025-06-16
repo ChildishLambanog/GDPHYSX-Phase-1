@@ -25,8 +25,6 @@
 
 #include "P6/RSpeedGenerator.h"
 
-
-
 // testing renderparticle
 
 #include "RenderParticle.h"
@@ -45,10 +43,9 @@ std::list<RenderParticle*> renderParticles; //list of particles to be rendered
 using namespace std::chrono_literals;
 constexpr std::chrono::nanoseconds timestep(16ms);
 
-
-
 float scale = 3;
 float StartPos = -800; // start of particles
+
 /*
 Timerstuff
 
@@ -59,7 +56,6 @@ std::vector<std::string> nOrder; // name order
 //false = main, true = sphere
 */
 
-
 bool stateControl = false;
 bool stateCam = true;
 
@@ -69,6 +65,8 @@ int Presseds = 0; //amount of spaces pressed or hold
 glm::vec3 cameraPos = glm::vec3(0, 0, 2.f);
 glm::vec3 WorldUp = glm::vec3(0, 1.0f, 0);
 glm::vec3 Front = glm::vec3(0, 0.0f, -1);
+const float cameraRotateSpeed = 1.5f; // degrees per key press/frame
+
 //initialize for mouse movement
 bool firstMouse = true;
 float pitch = 0.0f;
@@ -85,22 +83,20 @@ Model3D main_object({ 0, 0, 0 });
 Model3D main_object2({ 0, 0, 0 });
 Model3D main_object3({ 0, 0, 0 });
 Model3D main_object4({ 0, 0, 0 });
+OrthoCamera orca({ 0,2,0 });
+PerspectiveCamera perca({ 0,0,0 }, height, width);
+ 
 //initial color
 P6::PhysicsWorld pWorld = P6::PhysicsWorld();
 
 //initialize particle points
-P6::P6Particle particle = P6::P6Particle(StartPos, 250, 0); //Position of Partile 1
-P6::P6Particle particle2 = P6::P6Particle(StartPos, 0, 0); //Position of Partile 2
-P6::P6Particle particle3 = P6::P6Particle(StartPos, -250, 0); //Position of Partile 3
-P6::P6Particle Pp = P6::P6Particle(StartPos, -450, 0); //Position of Partile player
-
-OrthoCamera orca({ 0,2,0 });
-PerspectiveCamera perca({ 0,0,0 }, height, width);
+P6::P6Particle particle = P6::P6Particle(StartPos, 250, 0); //Position of Particle 1
+P6::P6Particle particle2 = P6::P6Particle(StartPos, 0, 0); //Position of Particle 2
+P6::P6Particle particle3 = P6::P6Particle(StartPos, -250, 0); //Position of Particle 3
+P6::P6Particle Pp = P6::P6Particle(StartPos, -450, 0); //Position of Particle player
 
 //Fountain Variables
 FountainDemo* fountain = nullptr;
-
-
 
 //Point light variables
 float brightness = 1.0f;
@@ -110,34 +106,106 @@ glm::vec3 sphere_color = { 1.f,1.f,1.f };
 
 void Destroy(Model3D& obj) //hide object
 {
-	obj.color=glm::vec4(0,0,0,0);
+    obj.color = glm::vec4(0, 0, 0, 0);
 }
 
-
-void Key_Callback(GLFWwindow* window, int key, int scancode, int action,int mods) 
+void Key_Callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
-    
-	if (key == GLFW_KEY_SPACE)
-	{
-		Pp.AddForce(P6::MyVector(1000,0, 0));
-	}
-};
+
+    //if (key == GLFW_KEY_SPACE)
+    //{
+    //	Pp.AddForce(P6::MyVector(1000,0, 0)); PLEASE REMOVE BEFORE SUBMISSION
+    //}
+
+    if (glfwGetKey(window, GLFW_KEY_1))
+    {
+        stateCam = true; //changes the camera into ortho mode
+        std::cout << "Camera changed to Ortographic" << std::endl;
+    }
+
+    if (glfwGetKey(window, GLFW_KEY_2))
+    {
+        stateCam = false; //changes the camera into perspective mode
+        std::cout << "Camera changed to Perspective" << std::endl;
+    }
+
+    // Only rotate camera in perspective mode
+    if (!stateCam)
+    {
+        bool updated = false;
+
+        // Rotate right (D)
+        if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+        {
+            yaw -= cameraRotateSpeed;
+            updated = true;
+        }
+
+        // Rotate left (A)
+        if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+        {
+            yaw += cameraRotateSpeed;
+            updated = true;
+        }
+
+        // Rotate up (W)
+        if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+        {
+            pitch += cameraRotateSpeed;
+            updated = true;
+        }
+
+        // Rotate down (S)
+        if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+        {
+            pitch -= cameraRotateSpeed;
+            updated = true;
+        }
+
+        //Clamp the pitch to avoid flipping
+        if (pitch > 89.0f)
+        {
+            pitch = 89.0f;
+        }
+
+        if (pitch < -89.0f)
+        {
+            pitch = -89.0f;
+        }
+
+        //If any key was pressed, update camera position and front //new addition 
+
+        if (updated)
+        {
+            glm::vec3 fountainCenter = main_object.getPosition(); // Or use your fountain's actual center
+
+            float radius = 500.0f; //Camera distance from the fountain, adjust as needed 12.0f/120/240
+            float heightOffset = 250.0f; //Height above the fountain center, adjust as needed 80.0f/200/
+
+            glm::vec3 offset;
+            offset.x = cos(glm::radians(yaw)) * cos(glm::radians(pitch)) * radius;
+            offset.y = sin(glm::radians(pitch)) * radius + heightOffset;
+            offset.z = sin(glm::radians(yaw)) * cos(glm::radians(pitch)) * radius;
+
+            glm::vec3 camPos = fountainCenter + offset;
+            perca.setCameraPos(camPos);
+
+            //Look at the fountain center
+            perca.setFront(glm::normalize(fountainCenter - camPos));
+        }
+    }
+}
 
 int main(void)
 {
     GLFWwindow* window;
-
-  /*  main_object.color = glm::vec4(1.f, 1.f, 1.f, 1.f);
-    main_object2.color = glm::vec4(1.f, 0.f, 1.f, 1.f);
-    main_object3.color = glm::vec4(0.f, 1.f, 1.f, 1.f);
-    main_object4.color = glm::vec4(1.f, 1.f, 0.f, 1.f);*/
 
     /* Initialize the library */
     if (!glfwInit())
         return -1;
 
     /* Create a windowed mode window and its OpenGL context */
-    window = glfwCreateWindow(width, height, "Rameses P. Amar", NULL, NULL);
+    window = glfwCreateWindow(width, height, "Amar, Dacanay, Villanueva Phase 1", NULL, NULL);
     if (!window)
     {
         glfwTerminate();
@@ -208,8 +276,6 @@ int main(void)
 
     std::string fragS = fragBuff.str();
     const char* f = fragS.c_str();
-
-    
 
     //MAIN OBJECT
     //create vertex shader(used for movements)
@@ -360,8 +426,6 @@ int main(void)
 
     glEnableVertexAttribArray(2);
 
-   
-
     //SET BINDINGS TO NULL
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
@@ -405,17 +469,11 @@ int main(void)
 	main_object3.setScale(glm::vec3(scale, scale, scale));
 	main_object4.setScale(glm::vec3(scale, scale, scale));
 
-    //P6::MyVector scalar = x * scalar;
-    //x *= y;
-
     //Initialize the clock and variables
 	using clock = std::chrono::high_resolution_clock;
     auto curr_time = clock::now();
 	auto prev_time = curr_time;
     std::chrono::nanoseconds curr_ns(0); 
-
-
-
 
 	particle.Acceleration = P6::MyVector(0.f, -900.81f, 0.f); //gravity
     //phys world for updating particles location
@@ -431,22 +489,6 @@ int main(void)
     //Fountain
     fountain = new FountainDemo(&pWorld, &main_object, 1000);
 
-   /* P6::DragForceGenerator drag = P6::DragForceGenerator(0.14f, 0.1f);
-	pWorld.forceRegistry.Add(&particle, &drag);*/
-   /* int mn = 20;
-    int mx = 30;
-    srand(time(0));
-
-    P6::RSpeedGenerator rsG1 = P6::RSpeedGenerator((mn - std::rand() % (mx - mn + 1)));
-	pWorld.forceRegistry.Add(&particle, &rsG1);
-	P6::RSpeedGenerator rsG2 = P6::RSpeedGenerator((mn - std::rand() % (mx - mn + 1)));
-	pWorld.forceRegistry.Add(&particle2, &rsG2);
-	P6::RSpeedGenerator rsG3 = P6::RSpeedGenerator((mn - std::rand() % (mx - mn + 1)));
-
-	pWorld.forceRegistry.Add(&particle3, &rsG3);*/
-
-
- //   float timeElapsed = 0.0f;
 
     /* Loop until the user closes the window */
     while (!glfwWindowShouldClose(window))
@@ -498,16 +540,13 @@ int main(void)
             viewMatrix = glm::lookAt(perca.getCameraPos(), perca.getCameraPos() + perca.getFront(), perca.getWorldUp());
         }
 
-        //skybox
-        glDepthMask(GL_FALSE);
-        glDepthFunc(GL_LEQUAL);
+        ////skybox
+        //glDepthMask(GL_FALSE);
+        //glDepthFunc(GL_LEQUAL);
 
-        glDepthMask(GL_TRUE);
-        glDepthFunc(GL_LESS);
+        //glDepthMask(GL_TRUE);
+        //glDepthFunc(GL_LESS);
 
-       
-        
-      
         //Drawing Main Object
         directionLight.setBrightness(dl_brightness);
 
@@ -526,29 +565,15 @@ int main(void)
 
         }
 
-        else  //set the camera to perspective
+        else  //set the camera to perspective //MAYBE NEEDS TO CHANGE
         {        
             main_object.setCamera(perca.getProjection(), perca.getCameraPos(), perca.getFront(), perca.getViewMat());
         }
+
         //MAIN OBJECT
-       //TEXTURE OF MAIN OBJECT
+        //TEXTURE OF MAIN OBJECT
         mainObjShader.use();
-        
-        //SETCOLOR HERE
-       
-     /*  main_object.setTexture(&mainObjShader, &texture, "tex0");
-        main_object.mainDraw(&mainObjShader, &VAO, &fullVertexData);
-        
-        main_object2.setTexture(&mainObjShader, &texture, "tex0");
-        main_object2.mainDraw(&mainObjShader, &VAO, &fullVertexData);
 
-        main_object3.setTexture(&mainObjShader, &texture, "tex0");
-        main_object3.mainDraw(&mainObjShader, &VAO, &fullVertexData);
-
-        main_object4.setTexture(&mainObjShader, &texture, "tex0");
-        main_object4.mainDraw(&mainObjShader, &VAO, &fullVertexData);*/
-
-     
 		// testing render particles
 		for (std::list<RenderParticle*>::iterator it = renderParticles.begin(); it != renderParticles.end(); ++it)
 		{
