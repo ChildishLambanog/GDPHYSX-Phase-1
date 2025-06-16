@@ -17,7 +17,7 @@ FountainDemo::FountainDemo(P6::PhysicsWorld* world, Model3D* model, int maxSpark
 //            (rand() % 100) / 50.0f + 3.0f,            // y: 3.0 to 5.0
 //            (rand() % 100 - 50) / 50.0f               // z: -1.0 to 1.0
 //        );
-//        spark->SetLifespan(1.5f + (rand() % 50) / 100.0f); // lifespan 1.5ñ2s
+//        spark->SetLifespan(1.5f + (rand() % 50) / 100.0f); // lifespan 1.5ÅEs
 //
 //        world->AddParticle(spark);
 //
@@ -67,7 +67,11 @@ void FountainDemo::Update(float deltaTime) {
 
         // Radius: 2m to 10m
         float radius = 2.0f + static_cast<float>(rand() % 800) / 100.0f; // 2.0 to 10.0
-        
+
+      
+
+        //setSizeArea
+        sparkModel->setScale(glm::vec3(radius, radius, radius));
 
 
 
@@ -76,8 +80,8 @@ void FountainDemo::Update(float deltaTime) {
         
         //  Initial spray force
         P6::MyVector sprayForce(
-			(rand() % 200 - 100) * 1000,         // X: -100 to 100 N * 1000 for larger force
-            ((rand() % 200) + 300) * 1000,         // Y: 300 to 500 N
+			(rand() % 200 - 100) * 100,         // X: -100 to 100 N * 1000 for larger force
+            ((rand() % 200) + 300) * 100,         // Y: 300 to 500 N
             (rand() % 2000 - 1000)          // Z: -100 to 100 N
         );
         spark->AddForce(sprayForce);
@@ -87,7 +91,7 @@ void FountainDemo::Update(float deltaTime) {
         // Add to world
         world->AddParticle(spark);
 
-        // Random color (RGB each 0.0ñ1.0)
+        // Random color (RGB each 0.0ÅE.0)
         P6::MyVector color(
             static_cast<float>(rand() % 100) / 100.0f,
             static_cast<float>(rand() % 100) / 100.0f,
