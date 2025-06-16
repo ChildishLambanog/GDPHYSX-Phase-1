@@ -10,7 +10,7 @@ OrthoCamera::OrthoCamera(glm::vec3 pos) : Camera(pos)
         -400.0f,     //bot
         400.0f,      //top
         -0.1f,     //z near
-        100.f);    //z far
+        400.f);    //z far
     this->WorldUp = glm::vec3(0.f, 1.0f, 0.f); //0.f, 1.0f, 0.f
     this->Front = glm::vec3(0.0f, 0.0f, -1.0f); //0.0f, -3.0f, -0.1f/1.0f
 }

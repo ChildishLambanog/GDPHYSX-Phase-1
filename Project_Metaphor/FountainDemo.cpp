@@ -80,10 +80,16 @@ void FountainDemo::Update(float deltaTime) {
         spark->mass = 1.0f;
         
         //  Initial spray force
+   //     P6::MyVector sprayForce(
+			//(rand() % 200 - 100) * 100,         // X: -100 to 100 N * 1000 for larger force
+   //         ((rand() % 200) + 300) * 100,         // Y: 300 to 500 N
+   //         (rand() % 2000 - 1000)          // Z: -100 to 100 N
+   //     );
+
         P6::MyVector sprayForce(
-			(rand() % 200 - 100) * 100,         // X: -100 to 100 N * 1000 for larger force
-            ((rand() % 200) + 300) * 100,         // Y: 300 to 500 N
-            (rand() % 2000 - 1000)          // Z: -100 to 100 N
+            (rand() % 200 - 100) * 1000,         // X: -100 to 100 N  NEW ADDITION
+            ((rand() % 200) + 300) * 1000,       // Y: 300 to 500 N    NEW ADDITION
+            (rand() % 200 - 100) * 1000          // Z: -100 to 100 N (was -1000 to 1000, but with *1000 for parity)   NEW ADDITION
         );
         spark->AddForce(sprayForce);
        
