@@ -54,35 +54,45 @@ void FountainDemo::Update(float deltaTime) {
         spark->Position = P6::MyVector(0, -320.0f, 0); // You can randomize X/Z for spread if desired
 
         // Velocity: spray effect
+        //spark->Velocity = P6::MyVector(
+        //    (rand() % 200 - 100) / 100.0f, // X: -1 to 1
+        //    (rand() % 200) / 100.0f + 4.0f, // Y: 4 to 6 m/s upward
+        //    (rand() % 200 - 100) / 100.0f  // Z: -1 to 1
+        //);
+
         spark->Velocity = P6::MyVector(
-            (rand() % 200 - 100) / 100.0f, // X: -1 to 1
-            (rand() % 200) / 100.0f + 4.0f, // Y: 4 to 6 m/s upward
-            (rand() % 200 - 100) / 100.0f  // Z: -1 to 1
+            (rand() % 200 - 100) / 50.0f, // X: -2 to 2  NEW ADDITION
+            (rand() % 200) / 100.0f + 4.0f, // Y: 4 to 6  NEW ADDITION
+            (rand() % 200 - 100) / 50.0f   // Z: -2 to 2  NEW ADDITION
         );
 
         // Lifespan: 1 to 10 seconds
         float lifespan = 1.0f + static_cast<float>(rand() % 900) / 100.0f; // 1.0 to 10.0
-		std::cout << "Lifespan: " << lifespan << std::endl;
+		//std::cout << "Lifespan: " << lifespan << std::endl;
         spark->SetLifespan(lifespan);
 
         // Radius: 2m to 10m
         float radius = 2.0f + static_cast<float>(rand() % 800) / 100.0f; // 2.0 to 10.0
-        
-
-
 
         // Mass and damping
         spark->mass = 1.0f;
         
         //  Initial spray force
+   //     P6::MyVector sprayForce(
+			//(rand() % 200 - 100) * 1000,         // X: -100 to 100 N * 1000 for larger force
+   //         ((rand() % 200) + 300) * 1000,         // Y: 300 to 500 N
+   //         (rand() % 2000 - 1000)          // Z: -100 to 100 N
+   //     );
+
         P6::MyVector sprayForce(
-			(rand() % 200 - 100) * 1000,         // X: -100 to 100 N * 1000 for larger force
-            ((rand() % 200) + 300) * 1000,         // Y: 300 to 500 N
-            (rand() % 2000 - 1000)          // Z: -100 to 100 N
+            (rand() % 200 - 100) * 1000,         // X: -100 to 100 N  NEW ADDITION
+            ((rand() % 200) + 300) * 1000,       // Y: 300 to 500 N    NEW ADDITION
+            (rand() % 200 - 100) * 1000          // Z: -100 to 100 N (was -1000 to 1000, but with *1000 for parity)   NEW ADDITION
         );
+
         spark->AddForce(sprayForce);
        
-        std::cout << "Spray force: X=" << sprayForce.x << std::endl;
+        //std::cout << "Spray force: X=" << sprayForce.x << std::endl;
 
         // Add to world
         world->AddParticle(spark);
