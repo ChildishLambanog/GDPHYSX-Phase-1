@@ -2,6 +2,7 @@
 
 FountainDemo::FountainDemo(P6::PhysicsWorld* world, Model3D* model, int maxSparks)
     : world(world), sparkModel(model), maxSparks(maxSparks) {
+
 }
 
 //void FountainDemo::Update(float deltaTime) {
@@ -71,7 +72,7 @@ void FountainDemo::Update(float deltaTime) {
       
 
         //setSizeArea
-        sparkModel->setScale(glm::vec3(radius, radius, radius));
+       // sparkModel->setScale(glm::vec3(radius, radius, radius));
         //test
 
 
@@ -99,7 +100,7 @@ void FountainDemo::Update(float deltaTime) {
         );
 
         // Create render particle and store
-        RenderParticle* renderP = new RenderParticle(spark, sparkModel, color);
+        RenderParticle* renderP = new RenderParticle(spark, sparkModel, color,radius);
         renderParticles.push_back(renderP);
     }
 

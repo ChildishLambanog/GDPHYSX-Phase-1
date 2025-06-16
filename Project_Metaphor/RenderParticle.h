@@ -9,6 +9,8 @@ public:
 	Model3D* model;
 	P6::MyVector color;
 
+	float size;
+
 	/*
 	to test 
 
@@ -26,6 +28,12 @@ public:
 		color = P6::MyVector(1.0f, 1.0f, 1.0f); // Default color white
 	}
 	RenderParticle(P6Particle* p, Model3D* m, P6::MyVector color) : particle(p), model(m), color(color) {}
+
+	RenderParticle(P6Particle* p, Model3D* m, P6::MyVector color, float size) : particle(p), model(m), color(color), size(size)
+	{
+		
+	}
+
 	void Draw();
 
 	void Draw(Shader* shaderProg, GLuint* VAO, std::vector<GLfloat>* fullVertexData,GLuint* tex, std::string name);
