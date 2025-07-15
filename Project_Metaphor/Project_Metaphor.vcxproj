@@ -144,6 +144,10 @@
     <ClCompile Include="ColorLight.cpp" />
     <ClCompile Include="DirectionLight.cpp" />
     <ClCompile Include="FountainDemo.cpp" />
+    <ClCompile Include="P6\AnchoredSpring.cpp" />
+    <ClCompile Include="P6\Bungee.cpp" />
+    <ClCompile Include="P6\Chain.cpp" />
+    <ClCompile Include="P6\ContactResolver.cpp" />
     <ClCompile Include="P6\DragForceGenerator.cpp" />
     <ClCompile Include="P6\GravityForceGenerator.cpp" />
     <ClCompile Include="P6\ForceRegistry.cpp" />
@@ -155,7 +159,11 @@
     <ClCompile Include="OrthoCamera.cpp" />
     <ClCompile Include="P6\P6Particle.cpp" />
     <ClCompile Include="P6\MyVector.cpp" />
+    <ClCompile Include="P6\ParticleContact.cpp" />
+    <ClCompile Include="P6\ParticleLink.cpp" />
+    <ClCompile Include="P6\ParticleSpring.cpp" />
     <ClCompile Include="P6\ParticleSystem.cpp" />
+    <ClCompile Include="P6\Rod.cpp" />
     <ClCompile Include="PerspectiveCamera.cpp" />
     <ClCompile Include="P6\PhysicsWorld.cpp" />
     <ClCompile Include="PointLight.cpp" />
@@ -169,6 +177,10 @@
     <ClInclude Include="ColorLight.h" />
     <ClInclude Include="DirectionLight.h" />
     <ClInclude Include="FountainDemo.h" />
+    <ClInclude Include="P6\AnchoredSpring.h" />
+    <ClInclude Include="P6\Bungee.h" />
+    <ClInclude Include="P6\Chain.h" />
+    <ClInclude Include="P6\ContactResolver.h" />
     <ClInclude Include="P6\DragForceGenerator.h" />
     <ClInclude Include="P6\GravityForceGenerator.h" />
     <ClInclude Include="P6\ForceRegistry.h" />
@@ -178,7 +190,11 @@
     <ClInclude Include="OrthoCamera.h" />
     <ClInclude Include="P6\P6Particle.h" />
     <ClInclude Include="P6\MyVector.h" />
+    <ClInclude Include="P6\ParticleContact.h" />
+    <ClInclude Include="P6\ParticleLink.h" />
+    <ClInclude Include="P6\ParticleSpring.h" />
     <ClInclude Include="P6\ParticleSystem.h" />
+    <ClInclude Include="P6\Rod.h" />
     <ClInclude Include="PerspectiveCamera.h" />
     <ClInclude Include="P6\PhysicsWorld.h" />
     <ClInclude Include="PointLight.h" />

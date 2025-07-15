@@ -28,6 +28,10 @@
 
 #include "P6/RSpeedGenerator.h"
 
+#include "P6/Rod.h"
+#include "P6/Bungee.h"
+#include "P6/Chain.h"
+
 //Testing Render Particle
 
 #include "RenderParticle.h"
@@ -539,7 +543,7 @@ int main(void)
 			(*it)->Draw(&mainObjShader, &VAO, &fullVertexData, &texture,"tex0");
 		}
 		
-        fountain->Render(&mainObjShader, &VAO, &fullVertexData, &texture, "spark");
+ /*       fountain->Render(&mainObjShader, &VAO, &fullVertexData, &texture, "spark");*/
         
         /* Swap front and back buffers */
         glfwSwapBuffers(window);
